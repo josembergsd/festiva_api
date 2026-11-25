@@ -1,0 +1,242 @@
+metadata:
+  generated: "2026-11-19"
+  source_tasks: ".specs/features/event-management/tasks.md"
+  last_updated: "2026-11-19"
+
+summary:
+  total_tasks: 5
+  completed_tasks: 5
+  in_progress_tasks: 0
+  pending_tasks: 0
+  completion_percentage: 100.0
+
+tasks:
+  - task_id: "T001"
+    description: "Criar projeto Maven, configurações, containers e migrações"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "pom.xml"
+          changes:
+            - change_type: "added"
+              description: "Maven, Java 25, Spring Boot, JDBC, Security, Flyway, OpenAPI e Testcontainers"
+        - file: "Dockerfile"
+          changes:
+            - change_type: "added"
+              description: "Build em múltiplas etapas e runtime Java 25"
+        - file: "compose.yaml"
+          changes:
+            - change_type: "added"
+              description: "PostgreSQL 17 e API com health dependency"
+        - file: "src/main/resources/db/migration/V1__create_users.sql"
+          changes:
+            - change_type: "added"
+              description: "Schema de contas"
+        - file: "src/main/resources/db/migration/V2__create_events.sql"
+          changes:
+            - change_type: "added"
+              description: "Schema e índices de eventos"
+    verification:
+      build_passed: true
+      test_results:
+        command: "mvn -B package (JDK 25)"
+        passed: 14
+        failed: 0
+        skipped: 1
+        failures: []
+      notes: "Build empacotado com sucesso."
+    upstream_trace:
+      plan_item: "T001"
+      requirements: ["REQ-005"]
+      full_trace: "REQ-005 -> T001 -> Maven/Docker/Flyway configuration"
+
+  - task_id: "T002"
+    description: "Implementar domínio, casos de uso e persistência JDBC de eventos"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "src/main/java/com/bradesco/festiva/domain/model/Event.java"
+          changes:
+            - change_type: "added"
+              description: "Regras e invariantes do evento"
+        - file: "src/main/java/com/bradesco/festiva/application/service/ManageEventsService.java"
+          changes:
+            - change_type: "added"
+              description: "Casos de uso de listagem, consulta, criação, atualização e cancelamento"
+        - file: "src/main/java/com/bradesco/festiva/adapters/out/persistence/JdbcEventRepository.java"
+          changes:
+            - change_type: "added"
+              description: "Adapter PostgreSQL via JdbcTemplate"
+    verification:
+      build_passed: true
+      test_results:
+        command: "mvn -B package (JDK 25)"
+        passed: 14
+        failed: 0
+        skipped: 1
+        failures: []
+      notes: "Testes unitários de domínio e casos de uso aprovados."
+    upstream_trace:
+      plan_item: "T002"
+      requirements: ["REQ-002", "REQ-003", "REQ-004"]
+      full_trace: "REQ-002/003/004 -> T002 -> domain/application/JDBC adapter"
+
+  - task_id: "T003"
+    description: "Implementar registro, login e segurança JWT"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "src/main/java/com/bradesco/festiva/application/service/AuthenticationService.java"
+          changes:
+            - change_type: "added"
+              description: "Registro, normalização de e-mail, BCrypt e login"
+        - file: "src/main/java/com/bradesco/festiva/application/service/TokenIssuer.java"
+          changes:
+            - change_type: "added"
+              description: "Emissão de token JWT HS256"
+        - file: "src/main/java/com/bradesco/festiva/infrastructure/config/SecurityConfiguration.java"
+          changes:
+            - change_type: "added"
+              description: "JWT stateless e validação de segredo externo"
+    verification:
+      build_passed: true
+      test_results:
+        command: "mvn -B package (JDK 25)"
+        passed: 14
+        failed: 0
+        skipped: 1
+        failures: []
+      notes: "Testes unitários de autenticação e assinatura JWT aprovados."
+    upstream_trace:
+      plan_item: "T003"
+      requirements: ["REQ-001", "REQ-003"]
+      full_trace: "REQ-001/003 -> T003 -> authentication service/JWT/security config"
+
+  - task_id: "T004"
+    description: "Implementar endpoints REST, validação, erros e OpenAPI"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "src/main/java/com/bradesco/festiva/adapters/in/web/EventController.java"
+          changes:
+            - change_type: "added"
+              description: "Endpoints públicos e protegidos de eventos"
+        - file: "src/main/java/com/bradesco/festiva/adapters/in/web/AuthenticationController.java"
+          changes:
+            - change_type: "added"
+              description: "Endpoints públicos de registro e login"
+        - file: "src/main/java/com/bradesco/festiva/adapters/in/web/ApiExceptionHandler.java"
+          changes:
+            - change_type: "added"
+              description: "Problem Details para erros de domínio e validação"
+        - file: "src/main/java/com/bradesco/festiva/infrastructure/config/OpenApiConfiguration.java"
+          changes:
+            - change_type: "added"
+              description: "OpenAPI 3 e esquema Bearer JWT"
+    verification:
+      build_passed: true
+      test_results:
+        command: "mvn -B package (JDK 25)"
+        passed: 14
+        failed: 0
+        skipped: 1
+        failures: []
+      notes: "Compilação completa; runtime HTTP aguardando Docker/PostgreSQL."
+    upstream_trace:
+      plan_item: "T004"
+      requirements: ["REQ-001", "REQ-002", "REQ-003", "REQ-004", "REQ-005"]
+      full_trace: "REQ-001..005 -> T004 -> REST controllers/DTOs/error handler/OpenAPI"
+
+  - task_id: "T005"
+    description: "Criar testes, documentação e evidências"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "src/test/java/com/bradesco/festiva/domain/model/EventTest.java"
+          changes:
+            - change_type: "added"
+              description: "Testes de invariantes e cancelamento"
+        - file: "src/test/java/com/bradesco/festiva/application/service/AuthenticationServiceTest.java"
+          changes:
+            - change_type: "added"
+              description: "Testes de registro, duplicidade e credenciais"
+        - file: "src/test/java/com/bradesco/festiva/adapters/in/web/PostgresApiIntegrationTest.java"
+          changes:
+            - change_type: "added"
+              description: "Fluxo HTTP integrado com PostgreSQL via Testcontainers"
+        - file: "README.md"
+          changes:
+            - change_type: "added"
+              description: "Execução, endpoints, configuração e validação"
+    verification:
+      build_passed: true
+      test_results:
+        command: "mvn -B package (JDK 25)"
+        passed: 14
+        failed: 0
+        skipped: 1
+        failures: []
+      notes: "Teste PostgreSQL ignorado automaticamente pois Docker não está disponível."
+    upstream_trace:
+      plan_item: "T005"
+      requirements: ["REQ-001", "REQ-002", "REQ-003", "REQ-004", "REQ-005"]
+      full_trace: "REQ-001..005 -> T005 -> tests/docs/build evidence"
+
+pending_tasks: []
+untracked_changes: []
+
+traceability_chain:
+  - chain_id: "TRACE-REQ-001"
+    requirement: "REQ-001"
+    plan_phase: "MVP"
+    plan_item: "T003/T004"
+    tasks: ["T003", "T004", "T005"]
+    files:
+      - "src/main/java/com/bradesco/festiva/application/service/AuthenticationService.java"
+      - "src/main/java/com/bradesco/festiva/adapters/in/web/AuthenticationController.java"
+    status: "complete"
+  - chain_id: "TRACE-REQ-002"
+    requirement: "REQ-002"
+    plan_phase: "MVP"
+    plan_item: "T002/T004"
+    tasks: ["T002", "T004", "T005"]
+    files:
+      - "src/main/java/com/bradesco/festiva/application/service/ManageEventsService.java"
+      - "src/main/java/com/bradesco/festiva/adapters/in/web/EventController.java"
+    status: "complete"
+  - chain_id: "TRACE-REQ-003"
+    requirement: "REQ-003"
+    plan_phase: "MVP"
+    plan_item: "T002/T003/T004"
+    tasks: ["T002", "T003", "T004", "T005"]
+    files:
+      - "src/main/java/com/bradesco/festiva/domain/model/Event.java"
+      - "src/main/java/com/bradesco/festiva/infrastructure/config/SecurityConfiguration.java"
+    status: "complete"
+  - chain_id: "TRACE-REQ-004"
+    requirement: "REQ-004"
+    plan_phase: "MVP"
+    plan_item: "T002/T004"
+    tasks: ["T002", "T004", "T005"]
+    files:
+      - "src/main/java/com/bradesco/festiva/domain/model/Event.java"
+      - "src/main/java/com/bradesco/festiva/adapters/in/web/EventController.java"
+    status: "complete"
+  - chain_id: "TRACE-REQ-005"
+    requirement: "REQ-005"
+    plan_phase: "MVP"
+    plan_item: "T001/T004/T005"
+    tasks: ["T001", "T004", "T005"]
+    files:
+      - "pom.xml"
+      - "compose.yaml"
+      - "src/main/resources/db/migration/V1__create_users.sql"
+      - "src/main/resources/db/migration/V2__create_events.sql"
+    status: "complete"
+
+validation:
+  passed: true
+  errors: []
+  warnings:
+    - "PostgreSQL integration test was skipped because Docker is unavailable."
+  blocking_issues: []
