@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Festiva Event API
 
 API REST para cadastro e gerenciamento de eventos, implementada em Java 25 com Spring Boot 4.1.1 e arquitetura hexagonal.
@@ -55,3 +56,7 @@ A listagem aceita `page` (base zero), `size` (1 a 100) e `status` (`SCHEDULED`, 
 - `mvn package`: compila e empacota a aplicação.
 
 O projeto inclui um teste de integração que valida cadastro, login, autorização e persistência com PostgreSQL. Ele requer Docker.
+=======
+# festiva_api
+API para o aplicativo Festiva para controle de eventos
+>>>>>>> ef860840d59349f7dd5aa7ad4978d5ddc44de87e
